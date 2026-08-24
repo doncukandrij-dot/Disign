@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создатель — Веб-разработка с душой</title>
+    <!-- Шрифты для красоты и статуса -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ----- БАЗА ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0d0f;
+            background-image: radial-gradient(circle at 20% 30%, #14181c 0%, #07090b 100%);
+            font-family: 'Inter', sans-serif;
+            color: #e3e8ee;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            position: relative;
+        }
+
+        /* декоративный шум — эффект "дорогой бумаги" */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-size: 300px 300px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ----- СВЕТОВЫЕ АКЦЕНТЫ (glow) ----- */
+        .glow-orbe {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-orbe--1 {
+            width: 600px;
+            height: 600px;
+            background: rgba(88, 130, 193, 0.08);
+            top: -15%;
+            right: -10%;
+        }
+        .glow-orbe--2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(180, 120, 255, 0.06);
+            bottom: -20%;
+            left: -10%;
+        }
+
+        /* ----- ШАПКА / ГЕРОЙ ----- */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0.4rem 1.6rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #a4b3cc;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: 0.25s ease;
+        }
+        .badge:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #d0dbe9;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 12vw, 5.6rem);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: #f0f4fe;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #b7cef0, #a77eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero .sub {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: #95a9c9;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 1rem;
+        }
+
+        .hero .sub strong {
+            color: #d4def5;
+            font-weight: 500;
+        }
+
+        /* ----- СТАТИСТИКА ОПЫТА (3+ года) ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 2.5rem auto 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 2.5rem;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-item .number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            background: linear-gradient(180deg, #f0f4fe 20%, #a0b7db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .stat-item .label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #7e94b5;
+            margin-top: 0.2rem;
+            font-weight: 400;
+        }
+        .stat-item .label small {
+            opacity: 0.6;
+            font-size: 0.7rem;
+        }
+
+        /* ----- ОСНОВНАЯ СЕТКА (about + опыт) ----- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            margin: 4rem 0 3rem;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        /* карточки */
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2.5rem;
+            padding: 2.8rem 2.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+        }
+        .card:hover {
+            background: rgba(255, 255, 255, 0.035);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+        }
+
+        .card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: #eff3fc;
+            margin-bottom: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .card h2 .accent {
+            color: #8faaef;
+            font-weight: 300;
+        }
+
+        .card p {
+            color: #b7c7e0;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            font-size: 1.05rem;
+        }
+        .card p strong {
+            color: #e5ecf9;
+            font-weight: 500;
+        }
+
+        /* список навыков / фишек */
+        .feature-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            font-weight: 300;
+            color: #c6d4ea;
+        }
+        .feature-list li::before {
+            content: "✦";
+            color: #8faaef;
+            font-weight: 300;
+            font-size: 1.1rem;
+            opacity: 0.7;
+            margin-top: 0.1rem;
+        }
+
+        /* блок "3+ года" в тексте */
+        .exp-highlight {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(100, 140, 255, 0.08), rgba(160, 120, 255, 0.08));
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-weight: 500;
+            color: #d6e2fc;
+        }
+
+        /* ----- ЦИТАТА / ПОДПИСЬ ----- */
+        .signature-block {
+            margin: 3.5rem 0 2rem;
+            padding: 2rem 2.5rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .signature-block .quote {
+            font-size: 1.2rem;
+            font-weight: 300;
+            font-style: italic;
+            color: #b7cbe5;
+            letter-spacing: -0.01em;
+        }
+        .signature-block .quote span {
+            color: #dce6f7;
+            font-weight: 400;
+        }
+        .signature-block .author {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 400;
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+            color: #cbdbf2;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.4rem 1.8rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        /* ----- ФУТЕР (деликатный) ----- */
+        .footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #61748f;
+        }
+        .footer .socials {
+            display: flex;
+            gap: 2rem;
+        }
+        .footer .socials a {
+            color: #7a8fab;
+            text-decoration: none;
+            font-weight: 400;
+            transition: 0.2s;
+            border-bottom: 1px solid transparent;
+        }
+        .footer .socials a:hover {
+            color: #d0def5;
+            border-bottom-color: #6c84b0;
+        }
+        .footer .copy {
+            opacity: 0.5;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* адаптив */
+        @media (max-width: 600px) {
+            .card {
+                padding: 2rem 1.5rem;
+                border-radius: 2rem;
+            }
+            .signature-block {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .signature-block .author {
+                white-space: normal;
+            }
+            .footer {
+                flex-direction: column-reverse;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- декоративные орбы -->
+    <div class="glow-orbe glow-orbe--1"></div>
+    <div class="glow-orbe glow-orbe--2"></div>
+
+    <div class="container">
+
+        <!-- ГЕРОЙ -->
+        <section class="hero">
+            <div class="badge">✦ веб-разработка &amp; архитектура</div>
+            <h1>
+                Создаю <span>цифровой</span> опыт<br>
+                с 2022 года
+            </h1>
+            <p class="sub">
+                <strong>3+ года</strong> в веб-разработке. 40+ проектов. <br>
+                От идеи до продакшена — с вниманием к деталям.
+            </p>
+
+            <!-- Статистика (3+ года подана визуально) -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="number">3+</div>
+                    <div class="label">года опыта</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">40+</div>
+                    <div class="label">завершённых проектов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">100%</div>
+                    <div class="label">ответственность <small>и сроки</small></div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">24/7</div>
+                    <div class="label">на связи</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ОСНОВНАЯ ИНФОРМАЦИЯ: Обо мне + Опыт -->
+        <div class="main-grid">
+
+            <!-- ЛЕВАЯ КОЛОНКА: О создателе -->
+            <div class="card">
+                <h2>
+                    <span class="accent">—</span> О создателе
+                </h2>
+                <p>
+                    Привет. Я — <strong>веб-разработчик</strong> с живым интересом к архитектуре,
+                    интерфейсам и тому, как код делает жизнь удобнее.
+                </p>
+                <p>
+                    За <span class="exp-highlight">3+ года</span> я прошёл путь от первых pet-проектов
+                    до сложных интеграций и продакшен-систем. Моя философия:
+                    <strong>каждая строка — для человека</strong>.
+                </p>
+                <p>
+                    Я не просто «делаю сайты». Я строю цифровые пространства, где
+                    форма служит содержанию, а скорость и доступность — не компромисс,
+                    а стандарт.
+                </p>
+                <ul class="feature-list">
+                    <li>Фронтенд с душой: React, Vue, чистый JS</li>
+                    <li>Бэкенд, который не падает: Node.js, Python, Go</li>
+                    <li>Дизайн-системы и доступность (a11y)</li>
+                    <li>Оптимизация производительности &amp; SEO</li>
+                </ul>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА: Опыт и подход -->
+            <div class="card">
+                <h2>
+                    <span class="accent">—</span> 3+ года в деталях
+                </h2>
+                <p>
+                    <strong>2022–2023</strong> — старт во фрилансе, десятки лендингов,
+                    интернет-магазинов и первых административных панелей.
+                </p>
+                <p>
+                    <strong>2024</strong> — переход к сложным SPA, работа с командами,
+                    внедрение TypeScript, CI/CD, микросервисная архитектура.
+                </p>
+                <p>
+                    <strong>2025 – настоящее время</strong> — я создаю полноценные
+                    цифровые продукты: от прототипа до масштабирования.
+                    Работаю с дизайнерами, продакт-менеджерами и напрямую с бизнесом.
+                </p>
+                <p style="margin-top: 1.8rem; border-left: 2px solid rgba(255,255,255,0.06); padding-left: 1.5rem; font-style: italic; color: #c8d8f0;">
+                    «За эти годы я понял главное: хороший код — это не про синтаксис,
+                    а про ясность и уважение к тому, кто будет им пользоваться.»
+                </p>
+            </div>
+        </div>
+
+        <!-- ПОДПИСЬ / ЦИТАТА -->
+        <div class="signature-block">
+            <div class="quote">
+                <span>“</span> Каждый проект — это возможность сделать что-то настоящее. <span>”</span>
+            </div>
+            <div class="author">Александр · веб-разработчик</div>
+        </div>
+
+        <!-- ФУТЕР -->
+        <footer class="footer">
+            <div class="copy">
+                © 2026 · создано с вниманием
+            </div>
+            <div class="socials">
+                <a href="#">GitHub</a>
+                <a href="#">Telegram</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Habr</a>
+            </div>
+        </footer>
+
+    </div>
+    <!-- конец контейнера -->
+
+</body>
+</html>
