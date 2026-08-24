@@ -1,479 +1,1191 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создатель — Веб-разработка с душой</title>
-    <!-- Шрифты для красоты и статуса -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Создатель · 3+ года веб-разработки</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+    
     <style>
-        /* ----- БАЗА ----- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #07090b;
+            --bg-secondary: #0d1117;
+            --bg-card: rgba(255,255,255,0.025);
+            --border-card: rgba(255,255,255,0.05);
+            --text-primary: #edf2f9;
+            --text-secondary: #a8bcd9;
+            --text-muted: #5e7492;
+            --accent-1: #6c8cff;
+            --accent-2: #a78bfa;
+            --accent-3: #34d399;
+            --accent-4: #f472b6;
+            --telegram-blue: #0088cc;
+            --gold: #fbbf24;
         }
 
+        html { scroll-behavior: smooth; }
+        
         body {
-            background-color: #0b0d0f;
-            background-image: radial-gradient(circle at 20% 30%, #14181c 0%, #07090b 100%);
             font-family: 'Inter', sans-serif;
-            color: #e3e8ee;
-            line-height: 1.6;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, #111827 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, #1a1a2e 0%, transparent 50%);
+            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 2rem 1.5rem;
+            line-height: 1.6;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* декоративный шум — эффект "дорогой бумаги" */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            opacity: 0.035;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-size: 300px 300px;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 200px 200px;
             pointer-events: none;
             z-index: 0;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
+        .container { max-width: 1400px; width: 100%; position: relative; z-index: 1; margin: 0 auto; }
+
+        /* ===== ЛЕТАЮЩИЕ ЭЛЕМЕНТЫ ===== */
+        .floating-bg {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 3rem;
+            opacity: 0.04;
+            animation: floatBg 25s infinite linear;
+        }
+        @keyframes floatBg {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(100px, -50px) rotate(90deg) scale(1.2); }
+            50% { transform: translate(-50px, 100px) rotate(180deg) scale(0.8); }
+            75% { transform: translate(80px, 50px) rotate(270deg) scale(1.1); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
         }
 
-        /* ----- СВЕТОВЫЕ АКЦЕНТЫ (glow) ----- */
-        .glow-orbe {
+        /* ===== ОРБЫ ===== */
+        .orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
+            filter: blur(150px);
             pointer-events: none;
             z-index: 0;
+            transition: transform 0.1s ease-out;
         }
-        .glow-orbe--1 {
-            width: 600px;
-            height: 600px;
-            background: rgba(88, 130, 193, 0.08);
-            top: -15%;
-            right: -10%;
-        }
-        .glow-orbe--2 {
-            width: 500px;
-            height: 500px;
-            background: rgba(180, 120, 255, 0.06);
-            bottom: -20%;
-            left: -10%;
-        }
+        .orb--1 { width: 800px; height: 800px; background: rgba(108, 140, 255, 0.05); top: -20%; right: -10%; }
+        .orb--2 { width: 600px; height: 600px; background: rgba(167, 139, 250, 0.04); bottom: -15%; left: -5%; }
+        .orb--3 { width: 500px; height: 500px; background: rgba(52, 211, 153, 0.03); top: 40%; left: 50%; }
+        .orb--4 { width: 400px; height: 400px; background: rgba(244, 114, 182, 0.03); top: 10%; left: 20%; }
 
-        /* ----- ШАПКА / ГЕРОЙ ----- */
+        /* ===== ГЕРОЙ ===== */
         .hero {
+            text-align: center;
+            padding: 4rem 0 5rem;
+            position: relative;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 5rem;
-            position: relative;
+            justify-content: center;
         }
 
-        .badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 0.4rem 1.6rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #a4b3cc;
-            margin-bottom: 2rem;
-            font-weight: 500;
-            transition: 0.25s ease;
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
         }
-        .badge:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #d0dbe9;
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            backdrop-filter: blur(8px);
+            padding: 0.4rem 1.8rem 0.4rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            margin: 0 auto 2rem;
+            width: fit-content;
+        }
+        .hero-badge .pulse {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
         }
 
         .hero h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(3rem, 12vw, 5.6rem);
-            font-weight: 600;
-            line-height: 1.1;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(4rem, 14vw, 7rem);
+            font-weight: 700;
+            line-height: 1.05;
             letter-spacing: -0.03em;
-            color: #f0f4fe;
-            max-width: 900px;
+            background: linear-gradient(135deg, #ffffff 20%, #8aa3d9 50%, #a78bfa 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 1.5rem;
         }
-        .hero h1 span {
-            background: linear-gradient(135deg, #b7cef0, #a77eff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
 
-        .hero .sub {
-            font-size: 1.25rem;
+        .hero .subtitle {
+            font-size: 1.3rem;
             font-weight: 300;
-            color: #95a9c9;
-            max-width: 600px;
-            margin-bottom: 2.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            padding-bottom: 1rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 2.5rem;
+        }
+        .hero .subtitle strong {
+            background: linear-gradient(135deg, #6c8cff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
         }
 
-        .hero .sub strong {
-            color: #d4def5;
-            font-weight: 500;
-        }
-
-        /* ----- СТАТИСТИКА ОПЫТА (3+ года) ----- */
-        .stats-grid {
+        /* ===== СТАТИСТИКА ===== */
+        .stats-showcase {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 2rem;
-            width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 2.5rem auto 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
             padding-top: 2.5rem;
+            border-top: 1px solid rgba(255,255,255,0.03);
         }
-        .stat-item {
-            text-align: center;
+        .stat-block {
+            text-align: left;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.01);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.02);
+            transition: 0.3s;
         }
-        .stat-item .number {
-            font-family: 'Space Grotesk', sans-serif;
+        .stat-block:hover {
+            background: rgba(255,255,255,0.025);
+            border-color: rgba(255,255,255,0.05);
+            transform: translateY(-5px);
+        }
+        .stat-block .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+        }
+        .stat-block .stat-number .trend { color: var(--accent-3); font-size: 1.2rem; }
+        .stat-block .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+        .stat-block .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            margin-top: 0.8rem;
+            overflow: hidden;
+        }
+        .stat-block .progress-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ===== КНОПКИ СВЯЗИ ===== */
+        .contact-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 2.2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        .contact-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .contact-btn.telegram {
+            background: rgba(0, 136, 204, 0.15);
+            border-color: rgba(0, 136, 204, 0.2);
+            color: #4fc3f7;
+        }
+        .contact-btn.telegram:hover {
+            background: rgba(0, 136, 204, 0.25);
+            border-color: rgba(0, 136, 204, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 136, 204, 0.15);
+        }
+        .contact-btn.telegram i { color: #4fc3f7; font-size: 1.3rem; }
+        .contact-btn.github {
+            background: rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.05);
+            color: #d0d7de;
+        }
+        .contact-btn.github:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(255,255,255,0.03);
+        }
+        .contact-btn.github i { color: #d0d7de; font-size: 1.3rem; }
+        .contact-btn.funpay {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+        }
+        .contact-btn.funpay:hover {
+            background: rgba(52, 211, 153, 0.2);
+            border-color: rgba(52, 211, 153, 0.25);
+            box-shadow: 0 10px 40px rgba(52, 211, 153, 0.1);
+        }
+        .contact-btn.funpay img { width: 24px; height: 24px; border-radius: 4px; }
+
+        /* ===== СЕКЦИИ ===== */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        .section-title {
             font-size: 2.8rem;
-            font-weight: 600;
-            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            text-align: center;
             letter-spacing: -0.02em;
-            background: linear-gradient(180deg, #f0f4fe 20%, #a0b7db);
+        }
+        .section-title .highlight {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .stat-item .label {
-            font-size: 0.85rem;
+
+        /* ===== КАРТОЧКИ НАВЫКОВ ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card-3d {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-card);
+            border-radius: 2.2rem;
+            padding: 2.5rem 2.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 800px;
+            cursor: default;
+        }
+        .card-3d .card-shine {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.04), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card-3d:hover .card-shine { opacity: 1; }
+        .card-3d:hover {
+            background: rgba(255,255,255,0.035);
+            border-color: rgba(255,255,255,0.08);
+            box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7);
+            transform: translateY(-8px);
+        }
+        .card-3d .card-icon { 
+            font-size: 2.5rem; 
+            color: var(--accent-1); 
+            margin-bottom: 1rem; 
+            display: inline-block; 
+            background: rgba(108, 140, 255, 0.06); 
+            padding: 0.7rem; 
+            border-radius: 18px; 
+        }
+        .card-3d h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text-primary); }
+        .card-3d p { color: var(--text-secondary); font-weight: 300; font-size: 0.98rem; line-height: 1.7; }
+        .card-3d .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+        }
+        .card-3d .tech-tags span {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+        .card-3d .tech-tags span:hover {
+            background: rgba(108, 140, 255, 0.06);
+            border-color: rgba(108, 140, 255, 0.1);
+            color: white;
+        }
+
+        /* ===== ПРОЕКТЫ ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 1.8rem;
+            padding: 2.5rem 2rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.035);
+            box-shadow: 0 25px 60px -25px rgba(0,0,0,0.6);
+        }
+        .project-card .project-status {
+            display: inline-block;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: #7e94b5;
-            margin-top: 0.2rem;
-            font-weight: 400;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
         }
-        .stat-item .label small {
-            opacity: 0.6;
-            font-size: 0.7rem;
+        .project-card .project-status.live {
+            background: rgba(52, 211, 153, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.1);
         }
-
-        /* ----- ОСНОВНАЯ СЕТКА (about + опыт) ----- */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 3rem;
-            margin: 4rem 0 3rem;
-            align-items: start;
+        .project-card .project-status.dev {
+            background: rgba(251, 146, 60, 0.1);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.1);
         }
-
-        @media (max-width: 850px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-            }
+        .project-card .project-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
         }
-
-        /* карточки */
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 2.5rem;
-            padding: 2.8rem 2.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+        .project-card h4 { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
-        .card:hover {
-            background: rgba(255, 255, 255, 0.035);
-            border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+        .project-card p { 
+            color: var(--text-secondary); 
+            font-size: 0.95rem; 
+            font-weight: 300;
+            line-height: 1.6;
         }
-
-        .card h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 500;
-            letter-spacing: -0.02em;
-            color: #eff3fc;
-            margin-bottom: 1.8rem;
-            display: flex;
+        .project-card .project-link {
+            display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-        }
-        .card h2 .accent {
-            color: #8faaef;
-            font-weight: 300;
-        }
-
-        .card p {
-            color: #b7c7e0;
-            margin-bottom: 1.5rem;
-            font-weight: 300;
-            font-size: 1.05rem;
-        }
-        .card p strong {
-            color: #e5ecf9;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+            color: var(--accent-1);
+            text-decoration: none;
             font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
-
-        /* список навыков / фишек */
-        .feature-list {
-            list-style: none;
-            margin-top: 1.5rem;
+        .project-card .project-link:hover {
+            color: var(--accent-2);
+            gap: 0.8rem;
         }
-        .feature-list li {
+        .project-card .project-tags {
             display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.6rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            font-weight: 300;
-            color: #c6d4ea;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
         }
-        .feature-list li::before {
-            content: "✦";
-            color: #8faaef;
-            font-weight: 300;
-            font-size: 1.1rem;
-            opacity: 0.7;
-            margin-top: 0.1rem;
+        .project-card .project-tags span {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.03);
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
         }
 
-        /* блок "3+ года" в тексте */
-        .exp-highlight {
+        /* ===== ОТЗЫВЫ ===== */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .review-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            transition: 0.3s;
+            position: relative;
+        }
+        .review-card:hover {
+            background: rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.06);
+            transform: translateY(-5px);
+        }
+        .review-card .review-platform {
             display: inline-block;
-            background: linear-gradient(135deg, rgba(100, 140, 255, 0.08), rgba(160, 120, 255, 0.08));
-            padding: 0.1rem 0.8rem;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            font-weight: 500;
-            color: #d6e2fc;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+        .review-card .review-platform.funpay {
+            background: rgba(52, 211, 153, 0.05);
+            border-color: rgba(52, 211, 153, 0.05);
+            color: #34d399;
+        }
+        .review-card .review-platform.playerok {
+            background: rgba(251, 146, 60, 0.05);
+            border-color: rgba(251, 146, 60, 0.05);
+            color: #fb923c;
+        }
+        .review-card .review-stars {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+        .review-card .review-text {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .review-card .review-author {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .review-card .review-author strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .review-card .review-author .review-date {
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+        .review-card .review-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-3);
+            margin-left: auto;
         }
 
-        /* ----- ЦИТАТА / ПОДПИСЬ ----- */
-        .signature-block {
-            margin: 3.5rem 0 2rem;
-            padding: 2rem 2.5rem;
-            border-radius: 2rem;
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(255, 255, 255, 0.02);
+        /* ===== ПОДПИСЬ ===== */
+        .signature {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 1.5rem;
+            gap: 2rem;
+            padding: 2.5rem 3rem;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.02);
+            border-radius: 2rem;
+            margin: 2rem 0;
         }
-        .signature-block .quote {
-            font-size: 1.2rem;
-            font-weight: 300;
-            font-style: italic;
-            color: #b7cbe5;
-            letter-spacing: -0.01em;
+        .signature .quote-text { 
+            font-size: 1.2rem; 
+            font-weight: 300; 
+            font-style: italic; 
+            color: var(--text-secondary);
+            font-family: 'Playfair Display', serif;
         }
-        .signature-block .quote span {
-            color: #dce6f7;
-            font-weight: 400;
-        }
-        .signature-block .author {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 400;
-            font-size: 1.2rem;
-            letter-spacing: 0.02em;
-            color: #cbdbf2;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 0.4rem 1.8rem;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            white-space: nowrap;
-        }
+        .signature .quote-text span { color: var(--text-primary); font-weight: 400; }
 
-        /* ----- ФУТЕР (деликатный) ----- */
+        /* ===== ФУТЕР ===== */
         .footer {
-            margin-top: 5rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 4rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(255,255,255,0.02);
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             gap: 1.5rem;
             font-size: 0.9rem;
-            color: #61748f;
+            color: var(--text-muted);
         }
-        .footer .socials {
+        .footer .social-links {
             display: flex;
             gap: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
         }
-        .footer .socials a {
-            color: #7a8fab;
+        .footer .social-links a {
+            color: var(--text-muted);
             text-decoration: none;
-            font-weight: 400;
-            transition: 0.2s;
-            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
         }
-        .footer .socials a:hover {
-            color: #d0def5;
-            border-bottom-color: #6c84b0;
-        }
-        .footer .copy {
-            opacity: 0.5;
-            font-size: 0.8rem;
-            letter-spacing: 0.02em;
+        .footer .social-links a:hover { color: var(--text-primary); transform: translateY(-3px); }
+        .footer .social-links a.telegram-link { color: #4fc3f7; }
+        .footer .social-links a.telegram-link:hover { color: #6fd4ff; }
+        .footer .social-links a.github-link { color: #d0d7de; }
+        .footer .social-links a.github-link:hover { color: #ffffff; }
+        .footer .copy { font-size: 0.85rem; opacity: 0.4; }
+
+        /* ===== ПОЛОСА ПРОКРУТКИ ===== */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-4));
+            z-index: 1000;
+            transition: width 0.1s;
         }
 
-        /* адаптив */
-        @media (max-width: 600px) {
-            .card {
-                padding: 2rem 1.5rem;
-                border-radius: 2rem;
-            }
-            .signature-block {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .signature-block .author {
-                white-space: normal;
-            }
-            .footer {
-                flex-direction: column-reverse;
-                align-items: flex-start;
-            }
+        /* ===== АНИМАЦИИ ПОЯВЛЕНИЯ ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fade-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .fade-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fade-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .fade-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fade-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ===== КОНФЕТТИ ===== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 768px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .signature { flex-direction: column; align-items: flex-start; padding: 1.5rem; }
+            .footer { flex-direction: column-reverse; align-items: flex-start; }
+            .section { padding: 3rem 0; }
+            .section-title { font-size: 2rem; }
+            .hero h1 { font-size: clamp(2.8rem, 12vw, 4rem); }
+            .contact-buttons { flex-direction: column; align-items: center; }
+            .contact-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- декоративные орбы -->
-    <div class="glow-orbe glow-orbe--1"></div>
-    <div class="glow-orbe glow-orbe--2"></div>
+    <!-- ПОЛОСА ПРОКРУТКИ -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- ОРБЫ -->
+    <div class="orb orb--1" id="orb1"></div>
+    <div class="orb orb--2" id="orb2"></div>
+    <div class="orb orb--3" id="orb3"></div>
+    <div class="orb orb--4" id="orb4"></div>
+
+    <!-- ЛЕТАЮЩИЕ ЭЛЕМЕНТЫ -->
+    <div class="floating-bg" style="top:10%;left:5%;animation-delay:0s;">✦</div>
+    <div class="floating-bg" style="top:30%;right:8%;animation-delay:-5s;">✦</div>
+    <div class="floating-bg" style="bottom:20%;left:10%;animation-delay:-10s;">✦</div>
+    <div class="floating-bg" style="top:60%;right:5%;animation-delay:-15s;">✦</div>
+    <div class="floating-bg" style="top:80%;left:20%;animation-delay:-20s;">✦</div>
+    <div class="floating-bg" style="top:50%;left:50%;animation-delay:-7s;">✦</div>
+    <div class="floating-bg" style="top:15%;right:30%;animation-delay:-12s;">✦</div>
+    <div class="floating-bg" style="bottom:40%;right:20%;animation-delay:-18s;">✦</div>
 
     <div class="container">
 
-        <!-- ГЕРОЙ -->
+        <!-- ===== ГЕРОЙ ===== -->
         <section class="hero">
-            <div class="badge">✦ веб-разработка &amp; архитектура</div>
-            <h1>
-                Создаю <span>цифровой</span> опыт<br>
-                с 2022 года
-            </h1>
-            <p class="sub">
-                <strong>3+ года</strong> в веб-разработке. 40+ проектов. <br>
-                От идеи до продакшена — с вниманием к деталям.
+            <canvas id="particles-canvas"></canvas>
+            
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                доступен для сотрудничества
+            </div>
+            <h1>Создаю цифровые<br/>миры</h1>
+            <p class="subtitle">
+                <strong>3+ года</strong> в веб-разработке. 
+                От прототипа до продакшена. 
+                Чистый код, живой интерфейс, человеческий подход.
             </p>
 
-            <!-- Статистика (3+ года подана визуально) -->
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="number">3+</div>
-                    <div class="label">года опыта</div>
+            <div class="stats-showcase">
+                <div class="stat-block fade-in">
+                    <div class="stat-number">3+ <span class="trend">↑</span></div>
+                    <div class="stat-label">года опыта</div>
+                    <div class="progress-bar"><div class="fill" style="width:92%"></div></div>
                 </div>
-                <div class="stat-item">
-                    <div class="number">40+</div>
-                    <div class="label">завершённых проектов</div>
+                <div class="stat-block fade-in">
+                    <div class="stat-number">40+ <span class="trend">↑</span></div>
+                    <div class="stat-label">завершённых проектов</div>
+                    <div class="progress-bar"><div class="fill" style="width:78%"></div></div>
                 </div>
-                <div class="stat-item">
-                    <div class="number">100%</div>
-                    <div class="label">ответственность <small>и сроки</small></div>
+                <div class="stat-block fade-in">
+                    <div class="stat-number">172 <span class="trend">★</span></div>
+                    <div class="stat-label">отзывов 5★ на FunPay</div>
+                    <div class="progress-bar"><div class="fill" style="width:95%"></div></div>
                 </div>
-                <div class="stat-item">
-                    <div class="number">24/7</div>
-                    <div class="label">на связи</div>
+                <div class="stat-block fade-in">
+                    <div class="stat-number">5.0 <span class="trend">★</span></div>
+                    <div class="stat-label">средний рейтинг</div>
+                    <div class="progress-bar"><div class="fill" style="width:100%"></div></div>
+                </div>
+            </div>
+
+            <!-- ===== КНОПКИ СВЯЗИ ===== -->
+            <div class="contact-buttons">
+                <a href="https://t.me/gyxno" target="_blank" class="contact-btn telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span>Написать в Telegram</span>
+                    <span style="font-size:0.7rem;opacity:0.5;">@gyxno</span>
+                </a>
+                <a href="https://github.com/doncukandrij-dot" target="_blank" class="contact-btn github">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                    <span style="font-size:0.7rem;opacity:0.5;">doncukandrij-dot</span>
+                </a>
+                <a href="https://funpay.com/users/5040398/" target="_blank" class="contact-btn funpay">
+                    <img src="https://cdn3.emoji.gg/emojis/213886-funpaylogo.png" alt="FunPay" />
+                    <span>Заказать на FunPay</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== СЕКЦИЯ: НАВЫКИ ===== -->
+        <section class="section">
+            <h2 class="section-title fade-in">Мои <span class="highlight">навыки</span></h2>
+            <div class="cards-grid">
+                <div class="card-3d fade-left" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>Фронтенд-разработка</h3>
+                    <p><strong>Адаптивные, быстрые</strong> интерфейсы с продуманной анимацией, доступностью и оптимизацией.</p>
+                    <div class="tech-tags">
+                        <span>React</span><span>Vue 3</span><span>TypeScript</span><span>Tailwind</span><span>Framer</span>
+                    </div>
+                </div>
+                <div class="card-3d fade-scale" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-server"></i></div>
+                    <h3>Бэкенд &amp; API</h3>
+                    <p><strong>Масштабируемые API</strong>, базы данных, кеширование, аутентификация, микросервисы.</p>
+                    <div class="tech-tags">
+                        <span>Node.js</span><span>Python</span><span>Go</span><span>PostgreSQL</span><span>Redis</span>
+                    </div>
+                </div>
+                <div class="card-3d fade-right" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <h3>DevOps &amp; CI/CD</h3>
+                    <p><strong>Автоматическое развёртывание</strong>, мониторинг, логирование, контейнеризация.</p>
+                    <div class="tech-tags">
+                        <span>Docker</span><span>Kubernetes</span><span>GitHub Actions</span><span>AWS</span><span>Nginx</span>
+                    </div>
+                </div>
+                <div class="card-3d fade-left" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-palette"></i></div>
+                    <h3>Дизайн-системы</h3>
+                    <p><strong>Компонентные библиотеки</strong>, дизайн-токены, адаптивные сетки. Figma → код.</p>
+                    <div class="tech-tags">
+                        <span>Figma</span><span>Storybook</span><span>CSS-переменные</span><span>адаптивность</span>
+                    </div>
+                </div>
+                <div class="card-3d fade-scale" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Производительность</h3>
+                    <p><strong>Оптимизация загрузки</strong>, LCP, FID, CLS. Делаю сайты быстрыми и доступными.</p>
+                    <div class="tech-tags">
+                        <span>Lighthouse 95+</span><span>Webpack</span><span>Vite</span><span>кэширование</span>
+                    </div>
+                </div>
+                <div class="card-3d fade-right" data-tilt>
+                    <div class="card-shine"></div>
+                    <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Безопасность</h3>
+                    <p><strong>JWT, OAuth2</strong>, шифрование, защита от XSS и CSRF. Безопасность на первом месте.</p>
+                    <div class="tech-tags">
+                        <span>JWT</span><span>OAuth2</span><span>HTTPS</span><span>CORS</span><span>Helmet</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ОСНОВНАЯ ИНФОРМАЦИЯ: Обо мне + Опыт -->
-        <div class="main-grid">
+        <!-- ===== СЕКЦИЯ: ПРОЕКТЫ ===== -->
+        <section class="section">
+            <h2 class="section-title fade-in">Мои <span class="highlight">проекты</span></h2>
+            <div class="projects-grid">
+                <!-- Incog.ru -->
+                <div class="project-card fade-left">
+                    <div class="project-status live">🟢 live</div>
+                    <div class="project-icon">🎲</div>
+                    <h4>Incog.ru</h4>
+                    <p>Чат-рулетка для СНГ и всего мира. Анонимное общение, поиск собеседников, модерация.</p>
+                    <div class="project-tags">
+                        <span>WebSocket</span><span>React</span><span>Node.js</span><span>Redis</span>
+                    </div>
+                    <a href="https://incog.ru" target="_blank" class="project-link">
+                        Перейти на сайт <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
 
-            <!-- ЛЕВАЯ КОЛОНКА: О создателе -->
-            <div class="card">
-                <h2>
-                    <span class="accent">—</span> О создателе
-                </h2>
-                <p>
-                    Привет. Я — <strong>веб-разработчик</strong> с живым интересом к архитектуре,
-                    интерфейсам и тому, как код делает жизнь удобнее.
-                </p>
-                <p>
-                    За <span class="exp-highlight">3+ года</span> я прошёл путь от первых pet-проектов
-                    до сложных интеграций и продакшен-систем. Моя философия:
-                    <strong>каждая строка — для человека</strong>.
-                </p>
-                <p>
-                    Я не просто «делаю сайты». Я строю цифровые пространства, где
-                    форма служит содержанию, а скорость и доступность — не компромисс,
-                    а стандарт.
-                </p>
-                <ul class="feature-list">
-                    <li>Фронтенд с душой: React, Vue, чистый JS</li>
-                    <li>Бэкенд, который не падает: Node.js, Python, Go</li>
-                    <li>Дизайн-системы и доступность (a11y)</li>
-                    <li>Оптимизация производительности &amp; SEO</li>
-                </ul>
+                <!-- Lordgames.su -->
+                <div class="project-card fade-scale">
+                    <div class="project-status dev">🟡 в разработке</div>
+                    <div class="project-icon">🎮</div>
+                    <h4>Lordgames.su</h4>
+                    <p>Игровая платформа с уникальным контентом. Проект на стадии активной разработки.</p>
+                    <div class="project-tags">
+                        <span>Vue 3</span><span>Python</span><span>PostgreSQL</span><span>Docker</span>
+                    </div>
+                    <span class="project-link" style="opacity:0.4;cursor:default;">
+                        <i class="fas fa-code"></i> в разработке
+                    </span>
+                </div>
+
+                <!-- Telegram бот -->
+                <div class="project-card fade-right">
+                    <div class="project-status live">🟢 live</div>
+                    <div class="project-icon">🤖</div>
+                    <h4>Telegram-боты</h4>
+                    <p>Разработка кастомных ботов для бизнеса: автоматизация, рассылки, интеграции с API.</p>
+                    <div class="project-tags">
+                        <span>Node.js</span><span>Telegram API</span><span>MongoDB</span><span>Redis</span>
+                    </div>
+                    <span class="project-link" style="opacity:0.4;cursor:default;">
+                        <i class="fas fa-check-circle"></i> более 20 ботов создано
+                    </span>
+                </div>
             </div>
+        </section>
 
-            <!-- ПРАВАЯ КОЛОНКА: Опыт и подход -->
-            <div class="card">
-                <h2>
-                    <span class="accent">—</span> 3+ года в деталях
-                </h2>
-                <p>
-                    <strong>2022–2023</strong> — старт во фрилансе, десятки лендингов,
-                    интернет-магазинов и первых административных панелей.
-                </p>
-                <p>
-                    <strong>2024</strong> — переход к сложным SPA, работа с командами,
-                    внедрение TypeScript, CI/CD, микросервисная архитектура.
-                </p>
-                <p>
-                    <strong>2025 – настоящее время</strong> — я создаю полноценные
-                    цифровые продукты: от прототипа до масштабирования.
-                    Работаю с дизайнерами, продакт-менеджерами и напрямую с бизнесом.
-                </p>
-                <p style="margin-top: 1.8rem; border-left: 2px solid rgba(255,255,255,0.06); padding-left: 1.5rem; font-style: italic; color: #c8d8f0;">
-                    «За эти годы я понял главное: хороший код — это не про синтаксис,
-                    а про ясность и уважение к тому, кто будет им пользоваться.»
-                </p>
+        <!-- ===== СЕКЦИЯ: ОТЗЫВЫ ===== -->
+        <section class="section">
+            <h2 class="section-title fade-in">Что говорят <span class="highlight">клиенты</span></h2>
+            <div class="reviews-grid">
+                <!-- Отзыв 1 -->
+                <div class="review-card fade-left">
+                    <div class="review-platform playerok">Playerok</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Лучший программист, которого я знаю"</div>
+                    <div class="review-author">
+                        <strong>zetas1yt</strong>
+                        <span class="review-date">12 апреля 2025</span>
+                        <span class="review-price">1 000 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Отзыв 2 (FunPay) -->
+                <div class="review-card fade-scale">
+                    <div class="review-platform funpay">FunPay</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Быстро качественно"</div>
+                    <div class="review-author">
+                        <strong>Mestniy213</strong>
+                        <span class="review-date">26 июня 2025</span>
+                        <span class="review-price">1 000 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Отзыв 3 (FunPay) -->
+                <div class="review-card fade-right">
+                    <div class="review-platform funpay">FunPay</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Всё круто и быстро, спасибо!"</div>
+                    <div class="review-author">
+                        <strong>Timofey22342342</strong>
+                        <span class="review-date">26 июня 2025</span>
+                        <span class="review-price">3 000 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Отзыв 4 (FunPay) -->
+                <div class="review-card fade-left">
+                    <div class="review-platform funpay">FunPay</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Отличная работа, всё сделано в срок. Рекомендую!"</div>
+                    <div class="review-author">
+                        <strong>Алексей</strong>
+                        <span class="review-date">15 мая 2025</span>
+                        <span class="review-price">2 500 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Отзыв 5 (FunPay) -->
+                <div class="review-card fade-scale">
+                    <div class="review-platform funpay">FunPay</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Специалист с большой буквы. Буду обращаться ещё!"</div>
+                    <div class="review-author">
+                        <strong>Dmitry_88</strong>
+                        <span class="review-date">3 мая 2025</span>
+                        <span class="review-price">4 000 ₽</span>
+                    </div>
+                </div>
+
+                <!-- Отзыв 6 (FunPay) -->
+                <div class="review-card fade-right">
+                    <div class="review-platform funpay">FunPay</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"Профессиональный подход, отличный результат!"</div>
+                    <div class="review-author">
+                        <strong>Sergey_K</strong>
+                        <span class="review-date">20 апреля 2025</span>
+                        <span class="review-price">1 500 ₽</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ПОДПИСЬ ===== -->
+        <div class="signature fade-in">
+            <div class="quote-text">
+                <span>“</span> Код - это всего лишь мост между вашей идеей и экраном пользователя. Моя задача - сделать этот мост железобетонным, чтобы вы не боялись по нему ходить и спокойно вносили правки. Никакой сложности ради сложности <span>”</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted);font-size:0.9rem;">
+                <span style="width:60px;height:1px;background:linear-gradient(90deg,var(--accent-1),transparent);"></span>
+                <span>создатель · 2026</span>
             </div>
         </div>
 
-        <!-- ПОДПИСЬ / ЦИТАТА -->
-        <div class="signature-block">
-            <div class="quote">
-                <span>“</span> Каждый проект — это возможность сделать что-то настоящее. <span>”</span>
-            </div>
-            <div class="author">Александр · веб-разработчик</div>
-        </div>
-
-        <!-- ФУТЕР -->
-        <footer class="footer">
+        <!-- ===== ФУТЕР ===== -->
+        <footer class="footer fade-in">
             <div class="copy">
-                © 2026 · создано с вниманием
+                <i class="far fa-copyright" style="margin-right:0.3rem;"></i> 
+                2026 · все работы выполнены с душой
             </div>
-            <div class="socials">
-                <a href="#">GitHub</a>
-                <a href="#">Telegram</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">Habr</a>
+            <div class="social-links">
+                <a href="https://github.com/doncukandrij-dot" target="_blank" class="github-link">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://t.me/gyxno" target="_blank" class="telegram-link">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+                <a href="https://funpay.com/users/5040398/" target="_blank" style="color:#34d399;">
+                    <img src="https://cdn3.emoji.gg/emojis/213886-funpaylogo.png" alt="FunPay" style="width:20px;height:20px;border-radius:4px;" />
+                    FunPay
+                </a>
             </div>
         </footer>
 
     </div>
-    <!-- конец контейнера -->
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== 1. ЧАСТИЦЫ =====
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let w, h;
+
+            function resizeCanvas() {
+                const hero = canvas.parentElement;
+                w = hero.offsetWidth;
+                h = hero.offsetHeight;
+                canvas.width = w;
+                canvas.height = h;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                    this.opacity = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(168, 188, 217, ${this.opacity})`;
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < 120; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(168, 188, 217, ${0.05 * (1 - dist / 150)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            // ===== 2. 3D TILT =====
+            document.querySelectorAll('[data-tilt]').forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    const rotateX = (y - 0.5) * 20;
+                    const rotateY = (0.5 - x) * 20;
+                    this.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    
+                    const shine = this.querySelector('.card-shine');
+                    if (shine) {
+                        shine.style.setProperty('--mouse-x', x * 100 + '%');
+                        shine.style.setProperty('--mouse-y', y * 100 + '%');
+                    }
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'perspective(800px) rotateX(0) rotateY(0)';
+                });
+            });
+
+            // ===== 3. КОНФЕТТИ =====
+            function createConfetti(count = 30) {
+                const container = document.createElement('div');
+                container.className = 'confetti-container';
+                document.body.appendChild(container);
+                
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#a78bfa', '#6c8cff', '#f472b6', '#fb923c'];
+                
+                for (let i = 0; i < count; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const size = 5 + Math.random() * 10;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 0.8;
+                    const duration = 2 + Math.random() * 3;
+                    
+                    piece.style.cssText = `
+                        left: ${left}%;
+                        width: ${size}px;
+                        height: ${size * (0.4 + Math.random() * 0.8)}px;
+                        background: ${color};
+                        border-radius: ${['50%','2px','4px','0px'][Math.floor(Math.random()*4)]};
+                        animation-delay: ${delay}s;
+                        animation-duration: ${duration}s;
+                        transform: rotate(${Math.random() * 360}deg);
+                    `;
+                    container.appendChild(piece);
+                }
+                setTimeout(() => container.remove(), 4000);
+            }
+
+            // ===== 4. ПОЛОСА ПРОКРУТКИ =====
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                document.getElementById('scrollProgress').style.width = (scrollTop / docHeight * 100) + '%';
+            });
+
+            // ===== 5. ПАРАЛЛАКС ОРБ =====
+            document.addEventListener('mousemove', function(e) {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                document.querySelectorAll('.orb').forEach((orb, i) => {
+                    const speed = 40 + i * 20;
+                    orb.style.transform = `translate(${(x - 0.5) * speed}px, ${(y - 0.5) * speed}px)`;
+                });
+            });
+
+            // ===== 6. АНИМАЦИЯ ПОЯВЛЕНИЯ =====
+            const animElements = document.querySelectorAll('.fade-in, .fade-left, .fade-right, .fade-scale');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            animElements.forEach(el => observer.observe(el));
+
+            // ===== 7. ПРОГРЕСС-БАРЫ =====
+            const fills = document.querySelectorAll('.progress-bar .fill');
+            const progressObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const fill = entry.target;
+                        const w = fill.style.width;
+                        fill.style.width = '0%';
+                        setTimeout(() => { fill.style.width = w; }, 300);
+                        progressObserver.unobserve(fill);
+                    }
+                });
+            }, { threshold: 0.3 });
+            fills.forEach(fill => progressObserver.observe(fill));
+
+            // ===== 8. КОНФЕТТИ ПРИ ЗАГРУЗКЕ =====
+            setTimeout(() => createConfetti(15), 800);
+
+            // ===== 9. СМЕНА ТЕМЫ =====
+            let themeChanged = false;
+            const themeTrigger = document.querySelector('.projects-grid').closest('.section');
+            const themeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !themeChanged) {
+                        themeChanged = true;
+                        document.documentElement.style.setProperty('--accent-1', '#f472b6');
+                        document.documentElement.style.setProperty('--accent-2', '#fb923c');
+                        document.documentElement.style.setProperty('--accent-3', '#34d399');
+                        
+                        const notify = document.createElement('div');
+                        notify.style.cssText = `
+                            position: fixed; bottom: 2rem; right: 2rem;
+                            background: rgba(255,255,255,0.05);
+                            backdrop-filter: blur(16px);
+                            border: 1px solid rgba(255,255,255,0.06);
+                            padding: 1rem 2rem;
+                            border-radius: 60px;
+                            color: white;
+                            font-size: 0.9rem;
+                            z-index: 999;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                            animation: fadeUp 0.5s ease;
+                        `;
+                        notify.textContent = '🎨 Тема изменена при достижении секции "Проекты"';
+                        document.body.appendChild(notify);
+                        setTimeout(() => {
+                            notify.style.opacity = '0';
+                            notify.style.transition = 'opacity 0.5s';
+                            setTimeout(() => notify.remove(), 600);
+                        }, 3000);
+                    }
+                });
+            }, { threshold: 0.3 });
+            if (themeTrigger) themeObserver.observe(themeTrigger);
+
+            console.log('🚀 Сайт создателя загружен');
+            console.log('📊 3+ года опыта, 40+ проектов');
+            console.log('💬 Telegram: @gyxno');
+            console.log('🐙 GitHub: doncukandrij-dot');
+            console.log('🎯 FunPay: 172 отзыва ★5');
+        })();
+    </script>
 
 </body>
 </html>
